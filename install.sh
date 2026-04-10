@@ -14,7 +14,7 @@
 set -euo pipefail
 
 # This value is replaced at release time by the release workflow.
-VERSION="v0.1.4"
+VERSION="v0.1.5"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 REPO="kubescan-com/kubescanai-downloads"
 BINARY_NAME="kubescanai"
@@ -77,8 +77,16 @@ resolve_version() {
 # Download and install
 # ─────────────────────────────────────────────
 
+TMPDIR=""
+cleanup() {
+    if [ -n "${TMPDIR}" ] && [ -d "${TMPDIR}" ]; then
+        rm -rf "${TMPDIR}"
+    fi
+}
+trap cleanup EXIT
+
 main() {
-    local os arch version url tmp
+    local os arch version url
 
     os=$(detect_os)
     arch=$(detect_arch)
@@ -89,8 +97,8 @@ main() {
     info "Installing ${BINARY_NAME} ${version} for ${os}/${arch}"
     info "URL: ${url}"
 
-    tmp=$(mktemp -d)
-    trap 'rm -rf "$tmp"' EXIT
+    TMPDIR=$(mktemp -d)
+    local tmp="${TMPDIR}"
 
     if ! curl -fsSL -o "${tmp}/${BINARY_NAME}" "${url}"; then
         err "failed to download ${url}"
