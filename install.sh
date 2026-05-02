@@ -14,7 +14,7 @@
 set -euo pipefail
 
 # This value is replaced at release time by the release workflow.
-VERSION="v0.1.22"
+VERSION="v0.1.23"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 REPO="kubescan-com/kubescanai-downloads"
 BINARY_NAME="kubescanai"
